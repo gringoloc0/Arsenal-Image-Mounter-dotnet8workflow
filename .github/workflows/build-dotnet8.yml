@@ -1,7 +1,7 @@
 Yaml
 
 Copy code
-name: Build Arsenal Image Mounter .NET 8 Self-Contained
+name: Build Arsenal Image Mounter .NET 8 Self-Contained (Portable)
 
 on:
   workflow_dispatch:
@@ -43,18 +43,22 @@ jobs:
                /p:PublishSingleFile=true `
                /p:IncludeNativeLibrariesForSelfExtract=true
 
-      - name: Package build
+      - name: Prepare portable folder
         run: |
-          mkdir output
-          copy src\Arsenal.ImageMounter.Gui\bin\Release\net8.0-windows\win-x64\publish\* output\
-          copy src\Arsenal.ImageMounter.Cli\bin\Release\net8.0-windows\win-x64\publish\* output\
-          powershell Compress-Archive -Path output\* -DestinationPath AIM-dotnet8.zip
+          mkdir portable
+          # Copy your existing portable folder structure from repo (if stored here)
+          if (Test-Path .\PortableBase) {
+            Copy-Item -Path .\PortableBase\* -Destination portable\ -Recurse
+          }
+          # Overwrite with new builds
+          Copy-Item src\Arsenal.ImageMounter.Gui\bin\Release\net8.0-windows\win-x64\publish\* portable\ -Force
+          Copy-Item src\Arsenal.ImageMounter.Cli\bin\Release\net8.0-windows\win-x64\publish\* portable\ -Force
+
+      - name: Package portable build
+        run: powershell Compress-Archive -Path portable\* -DestinationPath AIM-dotnet8-portable.zip
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: AIM-dotnet8
-          path: AIM-dotnet8.zip
-
-Copy code
-Add .NET 8 self-contained build workflow
+          name: AIM-dotnet8-portable
+          path: AIM-dotnet8-portable.zip
