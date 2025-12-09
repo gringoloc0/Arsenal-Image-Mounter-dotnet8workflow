@@ -1,7 +1,7 @@
 name: Build Arsenal Image Mounter .NET 8 Self-Contained (Portable)
 
 on:
-  workflow_dispatch:
+  workflow_dispatch: {}
   push:
     branches:
       - main
@@ -23,24 +23,10 @@ jobs:
         run: dotnet restore
 
       - name: Build GUI (self-contained)
-        run: |
-          dotnet publish src/Arsenal.ImageMounter.Gui/Arsenal.ImageMounter.Gui.csproj `
-            -c Release `
-            -f net8.0-windows `
-            -r win-x64 `
-            --self-contained true `
-            /p:PublishSingleFile=true `
-            /p:IncludeNativeLibrariesForSelfExtract=true
+        run: dotnet publish src/Arsenal.ImageMounter.Gui/Arsenal.ImageMounter.Gui.csproj -c Release -f net8.0-windows -r win-x64 --self-contained true /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
 
       - name: Build CLI (self-contained)
-        run: |
-          dotnet publish src/Arsenal.ImageMounter.Cli/Arsenal.ImageMounter.Cli.csproj `
-            -c Release `
-            -f net8.0-windows `
-            -r win-x64 `
-            --self-contained true `
-            /p:PublishSingleFile=true `
-            /p:IncludeNativeLibrariesForSelfExtract=true
+        run: dotnet publish src/Arsenal.ImageMounter.Cli/Arsenal.ImageMounter.Cli.csproj -c Release -f net8.0-windows -r win-x64 --self-contained true /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
 
       - name: Prepare portable folder
         run: |
