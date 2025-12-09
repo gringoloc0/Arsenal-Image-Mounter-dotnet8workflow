@@ -1,6 +1,3 @@
-Yaml
-
-Copy code
 name: Build Arsenal Image Mounter .NET 8 Self-Contained (Portable)
 
 on:
@@ -26,31 +23,31 @@ jobs:
         run: dotnet restore
 
       - name: Build GUI (self-contained)
-        run: dotnet publish src/Arsenal.ImageMounter.Gui/Arsenal.ImageMounter.Gui.csproj `
-               -c Release `
-               -f net8.0-windows `
-               -r win-x64 `
-               --self-contained true `
-               /p:PublishSingleFile=true `
-               /p:IncludeNativeLibrariesForSelfExtract=true
+        run: |
+          dotnet publish src/Arsenal.ImageMounter.Gui/Arsenal.ImageMounter.Gui.csproj `
+            -c Release `
+            -f net8.0-windows `
+            -r win-x64 `
+            --self-contained true `
+            /p:PublishSingleFile=true `
+            /p:IncludeNativeLibrariesForSelfExtract=true
 
       - name: Build CLI (self-contained)
-        run: dotnet publish src/Arsenal.ImageMounter.Cli/Arsenal.ImageMounter.Cli.csproj `
-               -c Release `
-               -f net8.0-windows `
-               -r win-x64 `
-               --self-contained true `
-               /p:PublishSingleFile=true `
-               /p:IncludeNativeLibrariesForSelfExtract=true
+        run: |
+          dotnet publish src/Arsenal.ImageMounter.Cli/Arsenal.ImageMounter.Cli.csproj `
+            -c Release `
+            -f net8.0-windows `
+            -r win-x64 `
+            --self-contained true `
+            /p:PublishSingleFile=true `
+            /p:IncludeNativeLibrariesForSelfExtract=true
 
       - name: Prepare portable folder
         run: |
           mkdir portable
-          # Copy your existing portable folder structure from repo (if stored here)
           if (Test-Path .\PortableBase) {
             Copy-Item -Path .\PortableBase\* -Destination portable\ -Recurse
           }
-          # Overwrite with new builds
           Copy-Item src\Arsenal.ImageMounter.Gui\bin\Release\net8.0-windows\win-x64\publish\* portable\ -Force
           Copy-Item src\Arsenal.ImageMounter.Cli\bin\Release\net8.0-windows\win-x64\publish\* portable\ -Force
 
