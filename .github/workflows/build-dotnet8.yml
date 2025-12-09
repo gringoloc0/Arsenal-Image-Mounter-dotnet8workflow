@@ -1,0 +1,60 @@
+Yaml
+
+Copy code
+name: Build Arsenal Image Mounter .NET 8 Self-Contained
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build GUI (self-contained)
+        run: dotnet publish src/Arsenal.ImageMounter.Gui/Arsenal.ImageMounter.Gui.csproj `
+               -c Release `
+               -f net8.0-windows `
+               -r win-x64 `
+               --self-contained true `
+               /p:PublishSingleFile=true `
+               /p:IncludeNativeLibrariesForSelfExtract=true
+
+      - name: Build CLI (self-contained)
+        run: dotnet publish src/Arsenal.ImageMounter.Cli/Arsenal.ImageMounter.Cli.csproj `
+               -c Release `
+               -f net8.0-windows `
+               -r win-x64 `
+               --self-contained true `
+               /p:PublishSingleFile=true `
+               /p:IncludeNativeLibrariesForSelfExtract=true
+
+      - name: Package build
+        run: |
+          mkdir output
+          copy src\Arsenal.ImageMounter.Gui\bin\Release\net8.0-windows\win-x64\publish\* output\
+          copy src\Arsenal.ImageMounter.Cli\bin\Release\net8.0-windows\win-x64\publish\* output\
+          powershell Compress-Archive -Path output\* -DestinationPath AIM-dotnet8.zip
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: AIM-dotnet8
+          path: AIM-dotnet8.zip
+
+Copy code
+Add .NET 8 self-contained build workflow
