@@ -19,7 +19,7 @@ jobs:
         # This step downloads the actual source code where .csproj files live
         uses: actions/checkout@v4
         with:
-          repository: ArsenalImageMounter/Arsenal-Image-Mounter # The correct repo
+          repository: ArsenalRecon/Arsenal-Image-Mounter # Corrected repository path
           path: src_repo # Places the code into a folder named 'src_repo'
 
       - name: Setup .NET 8 SDK
@@ -28,18 +28,18 @@ jobs:
           dotnet-version: '8.0.x'
 
       - name: Restore dependencies
-        # Now we adjust paths to point into the 'src_repo' directory
+        # Adjusting paths to point into the 'src_repo' directory
         run: |
-          dotnet restore src_repo/Arsenal.ImageMounter.Gui/Arsenal.ImageMounter.Gui.csproj
-          dotnet restore src_repo/Arsenal.ImageMounter.Cli/Arsenal.ImageMounter.Cli.csproj
+          dotnet restore src_repo/src/Arsenal.ImageMounter.Gui/Arsenal.ImageMounter.Gui.csproj
+          dotnet restore src_repo/src/Arsenal.ImageMounter.Cli/Arsenal.ImageMounter.Cli.csproj
 
       - name: Build GUI (self-contained)
         # Adjusting paths
-        run: dotnet publish src_repo/Arsenal.ImageMounter.Gui/Arsenal.ImageMounter.Gui.csproj -c Release -f net8.0-windows -r win-x64 --self-contained true /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
+        run: dotnet publish src_repo/src/Arsenal.ImageMounter.Gui/Arsenal.ImageMounter.Gui.csproj -c Release -f net8.0-windows -r win-x64 --self-contained true /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
 
       - name: Build CLI (self-contained)
         # Adjusting paths
-        run: dotnet publish src_repo/Arsenal.ImageMounter.Cli/Arsenal.ImageMounter.Cli.csproj -c Release -f net8.0-windows -r win-x64 --self-contained true /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
+        run: dotnet publish src_repo/src/Arsenal.ImageMounter.Cli/Arsenal.ImageMounter.Cli.csproj -c Release -f net8.0-windows -r win-x64 --self-contained true /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
 
       - name: Prepare portable folder
         # Adjusting paths
