@@ -20,7 +20,7 @@ jobs:
           repository: ArsenalRecon/Arsenal-Image-Mounter
           path: src_repo
 
-      # You can keep this list step or remove it now if you are confident in the fix
+      # You can remove this step once the build succeeds
       - name: List files for debugging purposes
         run: Get-ChildItem -Path src_repo -Recurse
 
@@ -30,18 +30,18 @@ jobs:
           dotnet-version: '8.0.x'
 
       - name: Restore dependencies
-        # Corrected paths (removed the extra /src/)
+        # !!! CORRECTED PATHS !!!
         run: |
-          dotnet restore src_repo/Arsenal.ImageMounter.Gui/Arsenal.ImageMounter.Gui.csproj
-          dotnet restore src_repo/Arsenal.ImageMounter.Cli/Arsenal.ImageMounter.Cli.csproj
+          dotnet restore "src_repo/Managed Source/Arsenal.ImageMounter.Gui/Arsenal.ImageMounter.Gui.csproj"
+          dotnet restore "src_repo/Managed Source/Arsenal.ImageMounter.Cli/Arsenal.ImageMounter.Cli.csproj"
 
       - name: Build GUI (self-contained)
-        # Corrected paths
-        run: dotnet publish src_repo/Arsenal.ImageMounter.Gui/Arsenal.ImageMounter.Gui.csproj -c Release -f net8.0-windows -r win-x64 --self-contained true /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
+        # !!! CORRECTED PATHS !!! (Quotes added because of the space in 'Managed Source')
+        run: dotnet publish "src_repo/Managed Source/Arsenal.ImageMounter.Gui/Arsenal.ImageMounter.Gui.csproj" -c Release -f net8.0-windows -r win-x64 --self-contained true /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
 
       - name: Build CLI (self-contained)
-        # Corrected paths
-        run: dotnet publish src_repo/Arsenal.ImageMounter.Cli/Arsenal.ImageMounter.Cli.csproj -c Release -f net8.0-windows -r win-x64 --self-contained true /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
+        # !!! CORRECTED PATHS !!!
+        run: dotnet publish "src_repo/Managed Source/Arsenal.ImageMounter.Cli/Arsenal.ImageMounter.Cli.csproj" -c Release -f net8.0-windows -r win-x64 --self-contained true /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
 
       - name: Prepare portable folder
         run: |
@@ -49,9 +49,9 @@ jobs:
           if (Test-Path .\PortableBase) {
             Copy-Item -Path .\PortableBase\* -Destination portable\ -Recurse
           }
-          # Corrected paths
-          Copy-Item src_repo\Arsenal.ImageMounter.Gui\bin\Release\net8.0-windows\win-x64\publish\* portable\ -Force
-          Copy-Item src_repo\Arsenal.ImageMounter.Cli\bin\Release\net8.0-windows\win-x64\publish\* portable\ -Force
+          # !!! CORRECTED PATHS !!! (Using PowerShell backslashes and quotes)
+          Copy-Item "src_repo\Managed Source\Arsenal.ImageMounter.Gui\bin\Release\net8.0-windows\win-x64\publish\*" portable\ -Force
+          Copy-Item "src_repo\Managed Source\Arsenal.ImageMounter.Cli\bin\Release\net8.0-windows\win-x64\publish\*" portable\ -Force
           
       - name: Package portable build
         run: powershell Compress-Archive -Path portable\* -DestinationPath AIM-dotnet8-portable.zip
