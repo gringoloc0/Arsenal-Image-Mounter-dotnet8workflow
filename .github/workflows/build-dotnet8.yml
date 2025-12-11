@@ -19,10 +19,11 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      - name: Restore dependencies
-        run: |
-          dotnet restore src/Arsenal.ImageMounter.Gui/Arsenal.ImageMounter.Gui.csproj
-          dotnet restore src/Arsenal.ImageMounter.Cli/Arsenal.ImageMounter.Cli.csproj
+    - name: Restore dependencies
+      working-directory: ./src/Arsenal.ImageMounter.Gui/Arsenal.ImageMounter.Gui.csproj
+      
+      run: dotnet restore src/Arsenal.ImageMounter.Gui/Arsenal.ImageMounter.Gui.csproj
+      run: dotnet restore src/Arsenal.ImageMounter.Cli/Arsenal.ImageMounter.Cli.csproj
 
       - name: Build GUI (self-contained)
         run: dotnet publish src/Arsenal.ImageMounter.Gui/Arsenal.ImageMounter.Gui.csproj -c Release -f net8.0-windows -r win-x64 --self-contained true /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
